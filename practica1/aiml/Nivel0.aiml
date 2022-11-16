@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+
+<!--Regla1-->
+<category>
+<pattern>En que estacion estamos</pattern>
+<template>Estamos en <srai>SEASON</srai></template>
+</category>
+
+<category>
+<pattern>* [estacion epoca] ^</pattern>
+<template><srai>EN QUE ESTACION ESTAMOS</srai></template>
+</category>
+
+<!--Regla2-->
+<category>
+<pattern>En que fase del dia estamos</pattern>
+<template>Ahora estamos en la <srai>DAY PHASE</srai></template>
+</category>
+
+<category>
+<pattern>^ [fase momento] del dia ^</pattern>
+<template><srai>EN QUE FASE DEL DIA ESTAMOS</srai></template>
+</category>
+
+
+<!--Regla3-->
+<category>
+<pattern>que dia de la semana es *</pattern>
+<template>Perdona, no se cual ese día</template>
+</category>
+
+<category>
+<pattern>que dia de la semana es <set>dia_semana</set></pattern>
+<template>
+    <star/> es <srai><map name="dia_semana"><star/></map></srai>
+</template>
+</category>
+
+<category>
+<pattern>que dia es *</pattern>
+<template><srai>QUE DIA DE LA SEMANA ES <star/></srai></template>
+</category>
+
+<!--Regla4-->
+<category>
+<pattern>que fecha sera dentro de una semana</pattern>
+<template>Dentro de una semana sera <srai>date in 7 days</srai></template>
+</category>
+
+<category>
+<pattern>^ fecha ^ dentro de una semana</pattern>
+<template><srai>que fecha sera dentro de una semana</srai></template>
+</category>
+
+<!--Regla5-->
+<category>
+<pattern>que fecha sera el proximo *</pattern>
+<template>
+        <think>
+                <set var="hoy"><srai>DAY</srai></set>
+                <set var="salida">El próximo <star/></set>
+        <condition var="hoy">
+                <li><value><star/></value><set var="fecha"><srai>date in 7 days</srai></set></li>
+                <li><set var="fecha"><srai>DATE ON <star/></srai></set></li>
+        </condition>
+        <set var="salida"><get var="salida"/> será <srai>TOP <get var="fecha"/></srai> de </set>
+        <set var="fecha"><srai>REMAIN <get var="fecha"/></srai></set>
+        <set var="salida"><get var="salida"/> <srai>TOP <get var="fecha"/></srai> del </set>
+        <set var="fecha"><srai>REMAIN <get var="fecha"/></srai></set>
+        <set var="salida"><get var="salida"/> <srai>TOP <get var="fecha"/></srai></set>
+        </think>
+        <get var="salida"/>
+</template>
+</category>
+
+<category>
+<pattern>^ fecha ^ proximo *</pattern>
+<template><srai>que fecha sera el proximo <star index="3"/></srai></template>
+</category>
+
+</aiml>

@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+
+<!-- Ejercicio1
+<category>
+<pattern>Hola</pattern>
+<template>Hola, que tal?</template>
+</category>
+
+<category>
+<pattern>yo bien, que tal tu</pattern>
+<template>Estoy genial!!! Me encanta conocer gente nueva.</template>
+</category>
+
+<category>
+<pattern>Como te llamas</pattern>
+<template>Mi nombre es HALfonso</template>
+</category>
+ -->
+
+<!-- Ejercicio2 -->
+<category>
+<pattern>Hola *</pattern>
+<template>Hola, que tal?</template>
+</category>
+
+<category>
+<pattern>Hola</pattern>
+<template>Hola de nuevo, que tal?</template>
+</category>
+
+<category>
+<pattern>* que tal tu</pattern>
+<template>Estoy genial!!!</template>
+</category>
+
+<!-- 
+<category>
+<pattern>Fenomeno, me llamo *</pattern>
+<template>Que casualidad <star/> yo tambien tengo nombre, me llamo HALberto</template>
+</category>
+-->
+
+<!-- Variables -->
+<category>
+<pattern>Cual es tu edad</pattern>
+<template>Tengo <bot name="age"/> años</template>
+</category>
+
+<category>
+<pattern>^ me llamo *</pattern>
+<template>
+    <set name="nombre"><star index="2"/></set>
+    <get name="nombre"/> es un bonito nombre.
+</template>
+</category>
+
+<category>
+<pattern>Cual es mi nombre</pattern>
+<template>
+  <condition name="nombre">
+    <li value="unknown">Aun no me has dicho tu nombre</li>
+    <li>Tu nombre es <get name="nombre"/></li>
+  </condition>
+</template>
+</category>
+
+<category>
+<pattern>Mi color favorito es el *</pattern>
+<template>
+    <think><set var="color"><star/></set></think>
+    El <get var="color"/> es un color que no me gusta.
+</template>
+</category>
+
+<!--Reduccion simbolica-->
+<category>
+<pattern>* mi nombre</pattern>
+<template><srai>CUAL ES MI  NOMBRE</srai></template>
+</category>
+
+<category>
+<pattern>^ como me llamo</pattern>
+<template><srai>CUAL ES MI  NOMBRE</srai></template>
+</category>
+
+<category>
+<pattern>^ que tal ^</pattern>
+<template><srai>* que tal tu</srai></template>
+</category>
+
+<category>
+<pattern>^ tu edad ^</pattern>
+<template><srai>Cual es tu edad</srai></template>
+</category>
+
+<category>
+<pattern>^ anios tienes ^</pattern>
+<template><srai>Cual es tu edad</srai></template>
+</category>
+
+<!-- Respuesta por defecto -->
+<category>
+<pattern>*</pattern>
+<template>Perdona, no te he entendido</template>
+</category>
+
+<!--sets-->
+<category>
+<pattern>Es <set>color</set> un color</pattern>
+<template>Si, <star/> es un color </template>
+</category>
+
+<category>
+<pattern> Es * un color</pattern>
+<template>No, <star/> no es un color</template>
+</category>
+
+<category>
+<pattern>cual es la capital de *</pattern>
+<template>No lo se</template>
+</category>
+
+<category>
+<pattern>cual es la capital de <set>pais</set></pattern>
+<template>
+    La capital de <star/> es <map name="capital"><star/></map>
+</template>
+</category>
+
+<category>
+<pattern>dime la capital de <set>pais</set></pattern>
+<template>
+    La capital de <star/> es <map name="capital"><star/></map>
+</template>
+</category>
+
+<category>
+<pattern>cual es la posicion de <set>atletico</set></pattern>
+<template>
+    La posicion de <star/> es <map name="atleticopos"><star/></map>
+</template>
+</category>
+
+<category>
+<pattern>cual es la posicion de *</pattern>
+<template>
+    La posicion de <star/>  no la se
+</template>
+</category>
+
+<category>
+<pattern>cual es la edad de <set>atletico</set></pattern>
+<template>
+    La edad de <star/> es <map name="atleticoedad"><star/></map> anios
+</template>
+</category>
+
+<category>
+<pattern>cual es la edad de *</pattern>
+<template>
+    La edad de <star/> no la se
+</template>
+</category>
+
+<category>
+<pattern>cual es la edad de dani</pattern>
+<template>
+    La edad de dani es 20
+</template>
+</category>
+
+<!--contexto-->
+<category>
+<pattern>Si</pattern>
+<that> TE GUSTA EL CAFE </that>
+<template>Lo prefieres solo o con leche</template>
+</category>
+
+<category>
+<pattern>No</pattern>
+<that> TE GUSTA EL CAFE </that>
+<template>Una pena, esta buenisimo</template>
+</category>
+
+<category>
+<pattern>^ cafe ^</pattern>
+<template>Te gusta el cafe</template>
+</category>
+
+<!--bucle-->
+<category>
+<pattern>Cuenta hasta <set>number</set></pattern>
+<template>
+  <think>
+    <set var="contador">1</set>
+    <set var="salida">1</set>
+  </think>
+  <condition var="contador">
+    <li><value><star/></value><get var="salida"/></li>
+    <li>
+      <think>
+      <set var="contador">
+        <map name="successor"><get var="contador"/></map>
+      </set>
+      <set var="salida"><get var="salida"/> <get var="contador"/></set>
+      </think>
+      <loop/>
+    </li>
+  </condition>
+</template>
+</category>
+
+<!--prueba al fallo (No AIMLIF Files found.  Looking for AIML)-->
+<category>
+<pattern>cual es la edad de juan</pattern>
+<template>
+    La edad de juan es 20
+</template>
+</category>
+
+<category>
+<pattern>cual es la edad de javi</pattern>
+<template>
+    La edad de javi es 19
+</template>
+</category>
+
+<!--ejercicio5-->
+<category>
+<pattern>cuantos futbolistas tienen *</pattern>
+<template>
+  <think>
+    <set var="jugadores"><readset>atletico</readset></set>
+    <set var="jugador"><srai> ITERATE <get var="jugadores"/></srai></set>
+  </think>
+  <condition var="jugador">
+    <li value="$"></li>
+    <li>
+      <think>
+      <set var="edad">
+        <map name="atleticoedad"><get var="jugador"/></map>
+      </set>
+      </think>
+      <condition var="edad">
+        <li><value><star/></value><get var="jugador"/></li>
+        <li></li>
+      </condition>
+      <think>
+        <set var="jugador"><srai> NEXT </srai></set>
+      </think>
+      <loop/>
+    </li>
+  </condition>
+</template>
+</category>
+
+<!--Aprender-->
+<category>
+<pattern>la capital de * es *</pattern>
+<template>
+        <think>
+        <set var="cap"><srai>CUAL ES LA CAPITAL DE <star/></srai></set>
+        </think>
+        <condition var="cap">
+                <li value="NO LO SE">
+                <learn>
+                        <category>
+                        <pattern>CUAL ES LA CAPITAL DE <eval><star/></eval></pattern>
+                        <template>
+                                La capital de <eval><star/></eval> es <eval><star index="2"/></eval>
+                        </template>
+                        </category>
+                </learn>
+                Recordare que la capital de <star/> es <star index="2"/>
+                </li>
+                <li>Ya lo sabia</li>
+        </condition>
+</template>
+</category>
+
+</aiml>

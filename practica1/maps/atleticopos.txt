@@ -1,0 +1,8 @@
+Oblak:portero
+Savic:defensa
+Carrasco:medio
+Suarez:delantero
+Koke:medio
+Saul:medio
+Correa:delantero
+Lodi:defensa

@@ -1,0 +1,417 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+
+<!-- Función para convertir los días con un solo dígito en 2 -->
+<category>
+<pattern>DAY2TWODIGITS <set>number</set></pattern>
+<template>
+        <think>
+                <set var="salida"><star/></set>
+                <set var="digit"><srai>DELETREA <star/></srai></set>
+                <set var="long"><srai>COUNT <get var="digit"/></srai></set>
+                <condition var="long">
+                        <li value="1"><set var="salida">0<get var="digit"/></set></li>
+                </condition>
+        </think>
+        <get var="salida"/>
+</template>
+</category> 
+
+<!--Regla1 (libre hoy mañana pasado mañana)-->
+<category>
+<pattern>LIBRE *</pattern>
+<template>
+        <think>
+                <set var="h_m_pm"><star/></set>
+                <condition var="h_m_pm">
+                        <li value="HOY">
+                                <set var="fecha_prov"><srai>DATE IN 0 DAYS</srai></set>
+                        </li>
+                        <li value="MANYANA">
+                                <set var="fecha_prov"><srai>DATE IN 1 DAYS</srai></set>
+                        </li>
+                        <li value="PASADO MANYANA">
+                                <set var="fecha_prov"><srai>DATE IN 2 DAYS</srai></set>
+                        </li>
+                        <li></li>
+                </condition>
+                <set name="fecha"><srai>DAY2TWODIGITS <srai>TOP <get var="fecha_prov"/></srai></srai>_</set>
+                <set var="fecha_prov"><srai>REMAIN <get var="fecha_prov"/></srai></set>
+                <set name="fecha"><get name="fecha"/><map name="meses"><srai>TOP <get var="fecha_prov"/></srai></map>_</set>
+                <set var="fecha_prov"><srai>REMAIN <get var="fecha_prov"/></srai></set>
+                <set name="fecha"><get name="fecha"/><srai>TOP <get var="fecha_prov"/></srai></set>
+        </think>
+        <srai>dia libre <get name="fecha"/></srai>
+</template>
+</category>
+
+<!--Regla2 (libre proximo/sigiente lunes martes.....)-->
+<category>
+<pattern>LIBRE [proximo siguiente] *</pattern>
+<template>
+        <think>
+                <set var="fecha_prov"><srai>FECHA PROXIMO <star/></srai></set>
+                <set var="fecha_prov"><srai>REMOVE 4 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set name="fecha"><srai>DAY2TWODIGITS <srai>TOP <get var="fecha_prov"/></srai></srai>_</set>
+                <set var="fecha_prov"><srai>REMOVE 2 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set name="fecha"><get name="fecha"/><map name="meses"><srai>TOP <get var="fecha_prov"/></srai></map>_</set>
+                <set var="fecha_prov"><srai>REMOVE 2 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set name="fecha"><get name="fecha"/><srai>TOP <get var="fecha_prov"/></srai></set>
+        </think>
+  <srai>dia libre <get name="fecha"/></srai>
+</template>
+</category>
+
+<!--Regla3 -->
+<category>
+<pattern>HORASLIBRES *</pattern>
+<template>
+        <think>
+                <set var="h_m_pm"><star/></set>
+                <condition var="h_m_pm">
+                        <li value="HOY">
+                                <set var="fecha_prov"><srai>DATE IN 0 DAYS</srai></set>
+                        </li>
+                        <li value="MANYANA">
+                                <set var="fecha_prov"><srai>DATE IN 1 DAYS</srai></set>
+                        </li>
+                        <li value="PASADO MANYANA">
+                                <set var="fecha_prov"><srai>DATE IN 2 DAYS</srai></set>
+                        </li>
+                        <li></li>
+                </condition>
+                <set var="dia"><srai>DAY2TWODIGITS <srai>TOP <get var="fecha_prov"/></srai></srai></set>
+                <set var="fecha_prov"><srai>REMAIN <get var="fecha_prov"/></srai></set>
+                <set var="mes"><srai>TOP <get var="fecha_prov"/></srai></set>
+                <set var="fecha_prov"><srai>REMAIN <get var="fecha_prov"/></srai></set>
+                <set var="anio"><srai>TOP <get var="fecha_prov"/></srai></set>
+        </think>
+          <srai>HORASLIBRES <get var="dia"/> de <get var="mes"/> del <get var="anio"/></srai>
+</template>
+</category>
+
+<!--Regla4 -->
+<category>
+<pattern>HORASLIBRES [proximo siguiente] *</pattern>
+<template>
+        <think>
+                <set var="fecha_prov"><srai>FECHA PROXIMO <star/></srai></set>
+                <set var="fecha_prov"><srai>REMOVE 4 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set var="dia"><srai>DAY2TWODIGITS <srai>TOP <get var="fecha_prov"/></srai></srai></set>
+                <set var="fecha_prov"><srai>REMOVE 2 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set var="mes"><srai>TOP <get var="fecha_prov"/></srai></set>
+                <set var="fecha_prov"><srai>REMOVE 2 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set var="anio"><srai>TOP <get var="fecha_prov"/></srai></set>
+        </think>
+        <srai>HORASLIBRES <get var="dia"/> de <get var="mes"/> del <get var="anio"/></srai>
+</template>
+</category>
+
+<!--Regla5 -->
+<category>
+<pattern>HORASLIBRES * POR LA *</pattern>
+<template>
+        <think>
+                <set var="h_m_pm"><star/></set>
+                <set var="manyana_tarde"><star index="2"/></set>
+                <condition var="h_m_pm">
+                        <li value="HOY">
+                                <set var="fecha_prov"><srai>DATE IN 0 DAYS</srai></set>
+                        </li>
+                        <li value="MANYANA">
+                                <set var="fecha_prov"><srai>DATE IN 1 DAYS</srai></set>
+                        </li>
+                        <li value="PASADO MANYANA">
+                                <set var="fecha_prov"><srai>DATE IN 2 DAYS</srai></set>
+                        </li>
+                        <li></li>
+                </condition>
+                <set var="dia"><srai>DAY2TWODIGITS <srai>TOP <get var="fecha_prov"/></srai></srai></set>
+                <set var="fecha_prov"><srai>REMAIN <get var="fecha_prov"/></srai></set>
+                <set var="mes"><srai>TOP <get var="fecha_prov"/></srai></set>
+                <set var="fecha_prov"><srai>REMAIN <get var="fecha_prov"/></srai></set>
+                <set var="anio"><srai>TOP <get var="fecha_prov"/></srai></set>
+                <condition var="manyana_tarde">
+                        <li value="MANYANA">
+                                <set var="salida"><srai>HLMANYANA <get var="dia"/> de <get var="mes"/> del <get var="anio"/></srai></set>
+                        </li>
+                        <li value="TARDE">
+                                <set var="salida"><srai>HLTARDE <get var="dia"/> de <get var="mes"/> del <get var="anio"/></srai></set>
+                        </li>
+                        <li></li>
+                </condition>
+        </think>
+        <get var="salida"/>
+</template>
+</category>
+
+<!--Regla6 -->
+<category>
+<pattern>HORASLIBRES [proximo siguiente] * POR LA *</pattern>
+<template>
+        <think>
+                <set var="fecha_prov"><srai>FECHA PROXIMO <star/></srai></set>
+                <set var="manyana_tarde"><star index="2"/></set>
+                <set var="fecha_prov"><srai>REMOVE 4 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set var="dia"><srai>DAY2TWODIGITS <srai>TOP <get var="fecha_prov"/></srai></srai></set>
+                <set var="fecha_prov"><srai>REMOVE 2 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set var="mes"><srai>TOP <get var="fecha_prov"/></srai></set>
+                <set var="fecha_prov"><srai>REMOVE 2 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set var="anio"><srai>TOP <get var="fecha_prov"/></srai></set>
+                <condition var="manyana_tarde">
+                        <li value="MANYANA">
+                                <set var="salida"><srai>HLMANYANA <get var="dia"/> de <get var="mes"/> del <get var="anio"/></srai></set>
+                        </li>
+                        <li value="TARDE">
+                                <set var="salida"><srai>HLTARDE <get var="dia"/> de <get var="mes"/> del <get var="anio"/></srai></set>
+                        </li>
+                        <li></li>
+                </condition>
+        </think>
+        <get var="salida"/>
+</template>
+</category>
+
+<!--Regla7 -->
+<category>
+<pattern>HORASLIBRES * A PARTIR DE [LA LAS] <set>horario_laboral</set></pattern>
+<template>
+        <think>
+                <set var="h_m_pm"><star/></set>
+                <condition var="h_m_pm">
+                        <li value="HOY">
+                                <set var="fecha_prov"><srai>DATE IN 0 DAYS</srai></set>
+                        </li>
+                        <li value="MANYANA">
+                                <set var="fecha_prov"><srai>DATE IN 1 DAYS</srai></set>
+                        </li>
+                        <li value="PASADO MANYANA">
+                                <set var="fecha_prov"><srai>DATE IN 2 DAYS</srai></set>
+                        </li>
+                        <li></li>
+                </condition>
+                <set var="dia"><srai>DAY2TWODIGITS <srai>TOP <get var="fecha_prov"/></srai></srai></set>
+                <set var="fecha_prov"><srai>REMAIN <get var="fecha_prov"/></srai></set>
+                <set var="mes"><srai>TOP <get var="fecha_prov"/></srai></set>
+                <set var="fecha_prov"><srai>REMAIN <get var="fecha_prov"/></srai></set>
+                <set var="anio"><srai>TOP <get var="fecha_prov"/></srai></set>
+        </think>
+        <srai>HORASLIBRES DE <srai>ORDINAL <star index="2"/></srai> A 22 DEL <get var="dia"/> DE <get var="mes"/> DEL <get var="anio"/></srai>
+</template>
+</category>
+
+<!--Regla8 -->
+<category>
+<pattern>HORASLIBRES [proximo siguiente] * A PARTIR DE [LA LAS] <set>horario_laboral</set></pattern>
+<template>
+        <think>
+                <set var="fecha_prov"><srai>FECHA PROXIMO <star/></srai></set>
+                <set var="fecha_prov"><srai>REMOVE 4 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set var="dia"><srai>DAY2TWODIGITS <srai>TOP <get var="fecha_prov"/></srai></srai></set>
+                <set var="fecha_prov"><srai>REMOVE 2 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set var="mes"><srai>TOP <get var="fecha_prov"/></srai></set>
+                <set var="fecha_prov"><srai>REMOVE 2 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set var="anio"><srai>TOP <get var="fecha_prov"/></srai></set>
+        </think>
+        <srai>HORASLIBRES DE <srai>ORDINAL <star index="2"/></srai> A 22 DEL <get var="dia"/> DE <get var="mes"/> DEL <get var="anio"/></srai>
+</template>
+</category>
+
+<!--Regla7 -->
+<category>
+<pattern>HORASLIBRES * A PARTIR DE [LA LAS] *</pattern>
+<template>
+        Disculpa, a esa hora no estamos abiertos, nuestro horario es de 08:00 a 20:00
+</template>
+</category>
+
+<!--Regla8 -->
+<category>
+<pattern>HORASLIBRES [proximo siguiente] * A PARTIR DE [LA LAS] *</pattern>
+<template>
+        Disculpa, a esa hora no estamos abiertos, nuestro horario es de 08:00 a 20:00
+</template>
+</category>
+
+<!--Regla9 -->
+<category>
+<pattern>^ para *</pattern>
+<template>
+        <think>
+                <set var="h_m_pm"><star index="2"/></set>
+                <condition var="h_m_pm">
+                        <li value="HOY">
+                                <set var="fecha_prov"><srai>DATE IN 0 DAYS</srai></set>
+                        </li>
+                        <li value="MANYANA">
+                                <set var="fecha_prov"><srai>DATE IN 1 DAYS</srai></set>
+                        </li>
+                        <li value="PASADO MANYANA">
+                                <set var="fecha_prov"><srai>DATE IN 2 DAYS</srai></set>
+                        </li>
+                        <li></li>
+                </condition>
+                <set var="dia"><srai>DAY2TWODIGITS <srai>TOP <get var="fecha_prov"/></srai></srai></set>
+                <set var="fecha_prov"><srai>REMAIN <get var="fecha_prov"/></srai></set>
+                <set var="mes"><srai>TOP <get var="fecha_prov"/></srai></set>
+                <set var="fecha_prov"><srai>REMAIN <get var="fecha_prov"/></srai></set>
+                <set var="anio"><srai>TOP <get var="fecha_prov"/></srai></set>
+        </think>
+        <srai>CITA EL <get var="dia"/> DE <get var="mes"/> DEL <get var="anio"/></srai>
+</template>
+</category>
+
+<!--Regla10 -->
+<category>
+<pattern>^ el [proximo siguiente] *</pattern>
+<template>
+        <think>
+                <set var="fecha_prov"><srai>FECHA PROXIMO <star index="2"/></srai></set>
+                <set var="fecha_prov"><srai>REMOVE 4 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set var="dia"><srai>DAY2TWODIGITS <srai>TOP <get var="fecha_prov"/></srai></srai></set>
+                <set var="fecha_prov"><srai>REMOVE 2 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set var="mes"><srai>TOP <get var="fecha_prov"/></srai></set>
+                <set var="fecha_prov"><srai>REMOVE 2 FIRST ELEMENTS FROM <get var="fecha_prov"/></srai></set>
+                <set var="anio"><srai>TOP <get var="fecha_prov"/></srai></set>
+        </think>
+        <srai>CITA EL <get var="dia"/> DE <get var="mes"/> DEL <get var="anio"/></srai>
+</template>
+</category>
+
+<!--Regla11 -->
+<category>
+<pattern>^ para * por la *</pattern>
+<template>
+        <think>
+                <set name="h_libres"><srai>HORASLIBRES <star index="2"/> POR LA <star index="3"/></srai></set>
+                <condition name="h_libres">
+                        <li value="EMPTYLIST">
+                                <set var ="salida">Lo siento no puedo está <set name="topic">ocupado</set>, ¿desea otro día?</set>
+                        </li>
+                        <li>
+                                <set var="salida">Tengo las siguentes horas libres <get name="h_libres"/> ¿Quiere <set name="topic">alguna</set> en concreto?</set>
+                        </li>
+                </condition>
+        </think>
+        <get var="salida"/>
+</template>
+</category>
+
+<!--Regla12 -->
+<category>
+<pattern>^ el [proximo siguiente] * por la *</pattern>
+<template>
+         <think>
+                <set name="h_libres"><srai>HORASLIBRES PROXIMO <star index="2"/> POR LA <star index="3"/></srai></set>
+                <condition name="h_libres">
+                        <li value="EMPTYLIST">
+                                <set var ="salida">Lo siento no puedo está <set name="topic">ocupado</set>, ¿desea otro día?</set>
+                        </li>
+                        <li>
+                                <set var="salida">Tengo las siguentes horas libres <get name="h_libres"/> ¿Quiere <set name="topic">alguna</set> en concreto?</set>
+                        </li>
+                </condition>
+        </think>
+        <get var="salida"/>
+</template>
+</category>
+
+<!--Regla13 -->
+<category>
+<pattern>^ para * a partir de [las la] *</pattern>
+<template>
+        <think>
+                <set name="h_libres"><srai>HORASLIBRES <star index="2"/> A PARTIR DE LAS <star index="3"/></srai></set>
+                <condition name="h_libres">
+                        <li value="EMPTYLIST">
+                                <set var ="salida">Lo siento no puedo está <set name="topic">ocupado</set>, ¿desea otro día?</set>
+                        </li>
+                        <li>
+                                <set var="salida">Tengo las siguentes horas libres <get name="h_libres"/> ¿Quiere <set name="topic">alguna</set> en concreto?</set>
+                        </li>
+                </condition>
+        </think>
+        <get var="salida"/>
+</template>
+</category>
+
+<!--Regla14 -->
+<category>
+<pattern>^ el [proximo siguiente] * a partir de [las la] *</pattern>
+<template>
+         <think>
+                <set name="h_libres"><srai>HORASLIBRES PROXIMO <star index="2"/> A PARTIR DE LAS <star index="3"/></srai></set>
+                <condition name="h_libres">
+                        <li value="EMPTYLIST">
+                                <set var ="salida">Lo siento no puedo está <set name="topic">ocupado</set>, ¿desea otro día?</set>
+                        </li>
+                        <li>
+                                <set var="salida">Tengo las siguentes horas libres <get name="h_libres"/> ¿Quiere <set name="topic">alguna</set> en concreto?</set>
+                        </li>
+                </condition>
+        </think>
+        <get var="salida"/>
+</template>
+</category>
+
+
+<topic name="ocupado">
+        <category>
+        <pattern>no</pattern>
+        <template>Vale, la próxima será. Que pase un buen día!</template>
+        </category>
+        
+        <category>
+        <pattern>si</pattern>
+        <template>¿qué día desea?</template>
+        </category>
+</topic>
+
+<topic name="alguna">
+        <category>
+        <pattern>no</pattern>
+        <template>
+                <srai>MARK NOLIBRE AT <srai>TOP <get name="h_libres"/></srai> ON <get name="fecha"/></srai>
+                Genial, le he reservado la cita a las <srai>TOP <get name="h_libres"/></srai> ¿desea <set name="topic">otra</set> cita?</template>
+        </category>
+        
+        <category>
+        <pattern>me da igual</pattern>
+        <template>
+                <srai>MARK NOLIBRE AT <srai>TOP <get name="h_libres"/></srai> ON <get name="fecha"/></srai>
+                Genial, le he reservado la cita a las <srai>TOP <get name="h_libres"/></srai> ¿desea <set name="topic">otra</set> cita?
+        </template>
+        </category>
+        
+        <category>
+        <pattern>^ [las la] *</pattern>
+        <template>
+                <think>
+                        <set var="ocupada"><srai>IS BUSY DAY <get name="fecha"/> AT <star index="2"/></srai></set>
+                </think>
+                <condition var="ocupada">
+                        <li value="TRUE">
+                                <set var="salida">La hora es incorrecta, recuerde que las horas libres son: <get name="h_libres"/></set>
+                        </li>
+                        <li>
+                                <srai>MARK NOLIBRE AT <star index="2"/> ON <get name="fecha"/></srai>
+                                <set var="salida">Perfecto, le reservo esa hora. ¿desea <set name="topic">otra</set> cita?</set>
+                        </li>
+                </condition>
+        </template>
+        </category>
+</topic>
+
+<topic name="otra">
+        <category>
+        <pattern>si</pattern>
+        <template>Vale, pues digame el día</template>
+        </category>
+        
+        <category>
+        <pattern>no</pattern>
+        <template>Pues que pase un buen día, adios.</template>
+        </category>
+</topic>
+
+</aiml>
